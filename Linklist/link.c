@@ -6,15 +6,20 @@ struct list{
 	struct list *next;
 };
 struct list *start_node = NULL;
+
 enum {
 	CREATE_NODE,
 	INSERT_NODE,
 	DELETE_NODE,
 	MIDDLE_NODE,
 	REVERSE_LIST,
-	DISPLAY_LIST = 5,
-	EXIT_LIST
+	DISPLAY_LIST,
+	REMOVE_DUPLICATION,
+	EXIT_LIST,
+	DELETE_NTH_NODE,
+	BUBBLE_SORT,
 };
+/*************************Function Prototype******************/
 int user_input();
 struct list *create_node();
 int display_list();
@@ -23,7 +28,10 @@ int exit_list();
 int insert_node();
 int delete_node();
 int reverse_list();
+int remove_duplication();
 int operation_choice(int);
+int delete_nth_node();
+void bubble_sort();
 
 int main()
 {
@@ -46,9 +54,12 @@ int user_input()
 	printf("2 to delete node\n");
 	printf("3 to print middle node\n");
 	printf("4 to reverse list\n");
-
 	printf("5 to Display linklist\n");
-	printf("6 to EXIT\n");
+	printf("6 to remove duplication linklist\n");
+	printf("7 to EXIT\n");
+	printf("8 to delete nth node\n");
+	printf("9 for bubble sort\n");
+
 	scanf("%d", &input);
 	printf("%d\n", input);
 //	while(1);
@@ -78,9 +89,17 @@ int operation_choice(int choice)
 	case REVERSE_LIST:
 		reverse_list();
 	break;
+	case REMOVE_DUPLICATION:
+		remove_duplication();
+	break;
 	case EXIT_LIST:
 		exit_list();
 	break;
+	case DELETE_NTH_NODE:
+		delete_nth_node();
+	break;
+	case BUBBLE_SORT:
+		bubble_sort();
 	default:
 		printf("Invalid option \n");
 	}
@@ -142,7 +161,59 @@ else
 		start_node = NULL;
 	return 0;
 }
+int delete_nth_node()
+{
+	int choice;
+	struct list *start, *temp;
+	printf("Enter the node you want to delete\n");
+	scanf("%d", &choice);
+	choice--;
 
+	if (!start_node){
+		printf("List is empty");
+		return 0;
+	}
+	start = start_node;
+	while(--choice)
+		start = start -> next;
+	temp = start->next;
+	start -> next = temp -> next;
+	free(temp);
+	temp = NULL;
+
+	return 0;
+}
+
+/****************Bubble Sort********************/
+void bubble_sort()
+{
+	struct list *start, *end;
+	int temp;
+	start = start_node;
+	end = NULL;
+
+	while(end != start_node){
+		start = start_node;
+	//	temp = start->data;
+		while(start->next != end){
+			printf("%d data %d temp\n", start->next->data, temp);
+			if(start->next->data < start->data){
+				start->next->data ^= start->data;
+				start->data ^= start->next->data;
+				start->next->data ^= start->data;
+			}
+			//	temp = start->next->data;
+			
+			
+			start = start->next;
+
+		}
+	end = start;
+	}
+
+}
+
+/****************Function to find middle node****************/
 int middle_node()
 {
 	struct list *single_list, *double_list;
@@ -157,7 +228,7 @@ int middle_node()
 	printf("%d\n", single_list->data);
 	return 0;
 }
-
+/**************Function to reverse linklist**********/
 int reverse_list()
 {
 	struct list *start, *end, *middle;
@@ -180,6 +251,27 @@ int reverse_list()
 	start_node = end;
 	return 0;
 }
+/********Function to Remove duplication in sorted list *****/
+
+int remove_duplication()
+{
+	struct list *start1 = start_node, *mov = NULL;
+	while((start1 != NULL) && (start1->next != NULL)){
+		mov = start1;
+		if( mov->data == mov->next->data ){
+			mov = mov->next;
+			while((mov->next != NULL) && (mov->data == mov->next->data)){
+				mov = mov->next;
+			}
+		}	
+		start1->next = mov->next;
+		start1 = start1->next;
+	}
+
+	return 0;
+}
+/***Function to display parameters***/
+
 int display_list()
 {
 	struct list *start = start_node;
